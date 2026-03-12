@@ -14,7 +14,8 @@ class App {
         this.$activeForm = document.querySelector(".active-form");
         this.$inactiveForm= document.querySelector(".inactive-form");
         this.$noteTitle = document.querySelector(".note-title");
-        this.$noteText = document.querySelector(".note-text");
+        this.$noteText = document.querySelector("#note-text");
+        this.$notes = document.querySelector(".notes");
         
         this.addEventListeners();
     }
@@ -27,6 +28,7 @@ class App {
     }
     //Handle an Evente
     handleClick(event){
+
         const isActiveForm = this.$activeForm.contains(event.target);
         const isInactiveForm = this.$inactiveForm.contains(event.target);
         const title = this.$noteTitle.value;
@@ -36,27 +38,34 @@ class App {
             this.openActiveForm();
         }
         else if(!isInactiveForm && !isActiveForm){
-            this.closeActiveForm();
-
             this.addNote({title, text});
-            this.displayNotes();
+            this.closeActiveForm();
+            
+            
         }
     }
     //Open and Close Forms
     openActiveForm(){
+
         this.$activeForm.style.display = "block";
         this.$inactiveForm.style.display = "none";
         this.$noteTitle.focus();
     }
     closeActiveForm(){
+
         this.$activeForm.style.display = "none";
         this.$inactiveForm.style.display = "block";
+        this.$noteTitle.value = "";
+        this.$noteText.value = "";
     }
 
     addNote ({title, text}) {
-        const id = Date.now().toString();
-        const note = new Note(id, title, text);
-        this.notes = [...this.notes, note];
+
+        if(text != ""){
+            const note = new Note(cuid(), title, text);
+            this.notes = [...this.notes, note];
+            this.displayNotes();
+        }        
     }
 
     editNote (id, {title, text}) {
@@ -74,12 +83,13 @@ class App {
     }
 
     displayNotes(){
-        this.notes.map(note => {
-            console.log(`id: ${note.id}
-                title: ${note.title}
-                text: ${note.text}`);
+        this.$notes.innerHTML = this.notes.forEach(note =>{
+            const temp = document.createElement("div");
+            temp.textContent = "<h1>Wow</h1>"
         })
     }
 }
 
 const app = new App();
+
+
