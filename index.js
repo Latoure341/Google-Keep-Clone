@@ -83,10 +83,71 @@ class App {
     }
 
     displayNotes(){
-        this.$notes.innerHTML = this.notes.forEach(note =>{
-            const temp = document.createElement("div");
-            temp.textContent = "<h1>Wow</h1>"
-        })
+        this.$notes.innerHTML = this.notes.map(note =>{
+           return `
+           <div class="note">
+          <span class="material-symbols-outlined check-circle"
+            >check_circle</span
+          >
+          <div class="title">${note.title}</div>
+          <div class="text">${note.text}</div>
+          <div class="note-footer">
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >add_alert</span
+              >
+              <span class="tooltip-text">Remind me</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >person_add</span
+              >
+              <span class="tooltip-text">Collaborator</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >palette</span
+              >
+              <span class="tooltip-text">Change Color</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >image</span
+              >
+              <span class="tooltip-text">Add Image</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >archive</span
+              >
+              <span class="tooltip-text">Archive</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >more_vert</span
+              >
+              <span class="tooltip-text">More</span>
+            </div>
+          </div>
+        </div>
+        <span class="tooltip-text">Add Image</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >archive</span
+              >
+              <span class="tooltip-text">Archive</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >more_vert</span
+              >
+              <span class="tooltip-text">More</span>
+            </div>
+          </div>
+        </div>
+           `
+        }).join("")
     }
 }
 
