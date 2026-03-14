@@ -10,12 +10,15 @@ class Note {
 class App {
     constructor() {
         this.notes = [];
-
+        
         this.$activeForm = document.querySelector(".active-form");
         this.$inactiveForm= document.querySelector(".inactive-form");
         this.$noteTitle = document.querySelector(".note-title");
         this.$noteText = document.querySelector("#note-text");
         this.$notes = document.querySelector(".notes");
+        this.$form = document.querySelector("#form");
+        
+        
         
         this.addEventListeners();
     }
@@ -25,8 +28,28 @@ class App {
         document.body.addEventListener("click", (event) => {
             this.handleClick(event);
         })
+
+        this.$form.addEventListener("submit", (event)=> {
+          event.preventDefault();
+
+          const title = this.$noteTitle.value;
+          const text = this.$noteText.value;
+          
+          this.addNote({title, text});
+          this.closeActiveForm();
+        })
+
+        //this.$notes.addEventListener("mouseover", (e)=>{
+          // this.handleMouseOverNote();
+          // console.log(e.target)
+        // })
+        // this.$notes.addEventListener("mouseout", (e)=>{
+          // this.handleMouseOutNote();
+          // console.log(e.target)
+        // })
     }
-    //Handle an Evente
+
+    //Handle an Event
     handleClick(event){
 
         const isActiveForm = this.$activeForm.contains(event.target);
@@ -39,9 +62,7 @@ class App {
         }
         else if(!isInactiveForm && !isActiveForm){
             this.addNote({title, text});
-            this.closeActiveForm();
-            
-            
+            this.closeActiveForm();  
         }
     }
     //Open and Close Forms
@@ -58,6 +79,22 @@ class App {
         this.$noteTitle.value = "";
         this.$noteText.value = "";
     }
+
+    handleMouseOverNote() {
+      const $note = document.querySelector(".note");
+      const $checkNote = $note.querySelector("#check-circle");
+      const $noteFooter = $note.querySelector(".note-footer");
+      $checkNote.style.visibility = "visible";
+      $noteFooter.style.visibility = "visible";
+    }
+
+    handleMouseOutNote() {
+        const $note = document.querySelector(".note");
+        const $checkNote = $note.querySelector("#check-circle");
+        const $noteFooter = $note.querySelector(".note-footer");
+        $checkNote.style.visibility = "hidden";
+        $noteFooter.style.visibility = "hidden";
+      }
 
     addNote ({title, text}) {
 
@@ -85,8 +122,8 @@ class App {
     displayNotes(){
         this.$notes.innerHTML = this.notes.map(note =>{
            return `
-           <div class="note">
-          <span class="material-symbols-outlined check-circle"
+           <div class="note" onmouseover="app.handleMouseOverNote()" onmouseout="app.handleMouseOutNote()">
+          <span class="material-symbols-outlined check-circle" id="check-circle"
             >check_circle</span
           >
           <div class="title">${note.title}</div>
@@ -132,18 +169,7 @@ class App {
         </div>
         <span class="tooltip-text">Add Image</span>
             </div>
-            <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >archive</span
-              >
-              <span class="tooltip-text">Archive</span>
-            </div>
-            <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >more_vert</span
-              >
-              <span class="tooltip-text">More</span>
-            </div>
+            
           </div>
         </div>
            `
