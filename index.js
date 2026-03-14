@@ -9,7 +9,7 @@ class Note {
 
 class App {
     constructor() {
-        this.notes = [];
+        this.notes = [new Note("abc1", "test title", "test text")];
         
         this.$activeForm = document.querySelector(".active-form");
         this.$inactiveForm= document.querySelector(".inactive-form");
@@ -17,16 +17,22 @@ class App {
         this.$noteText = document.querySelector("#note-text");
         this.$notes = document.querySelector(".notes");
         this.$form = document.querySelector("#form");
+        this.$note = document.querySelector(".note")
+
+        this.$modal = document.querySelector(".modal");
+        this.$modalForm = document.querySelector("#modal-form")
         
         
         
         this.addEventListeners();
+        this.displayNotes();
     }
 
     addEventListeners(){
 
         document.body.addEventListener("click", (event) => {
             this.handleClick(event);
+            this.openModal(event);
         })
 
         this.$form.addEventListener("submit", (event)=> {
@@ -39,14 +45,6 @@ class App {
           this.closeActiveForm();
         })
 
-        //this.$notes.addEventListener("mouseover", (e)=>{
-          // this.handleMouseOverNote();
-          // console.log(e.target)
-        // })
-        // this.$notes.addEventListener("mouseout", (e)=>{
-          // this.handleMouseOutNote();
-          // console.log(e.target)
-        // })
     }
 
     //Handle an Event
@@ -64,6 +62,7 @@ class App {
             this.addNote({title, text});
             this.closeActiveForm();  
         }
+        this.closeModal(event)
     }
     //Open and Close Forms
     openActiveForm(){
@@ -95,6 +94,22 @@ class App {
         $checkNote.style.visibility = "hidden";
         $noteFooter.style.visibility = "hidden";
       }
+    
+    //Open And Close Modal
+    openModal(event){
+
+      if(event.target.closest(".note")){
+        this.$modal.classList.add("open-modal")
+      }
+    }
+
+    closeModal(event){
+
+      const isModalForm = this.$modalForm.contains(event.target);
+        if(!isModalForm && this.$modal.classList.contains("open-modal")){
+          this.$modal.classList.remove("open-modal")
+        }
+    }
 
     addNote ({title, text}) {
 
