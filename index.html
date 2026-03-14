@@ -179,9 +179,10 @@
         <div class="modal-content">
           <div class="form-container ">
             <form class="form" id="modal-form">
-              <input type="text" class="note-title" placeholder="Title" />
+              <input type="text" class="note-title" id="modal-title" placeholder="Title" />
               <input
                 type="text"
+                id="modal-text"
                 class="note-text"
                 placeholder="Take a note..."
               />
@@ -236,7 +237,7 @@
                     <span class="tooltip-text">Redo</span>
                   </div>
                 </div>
-                <button class="close-btn">close</button>
+                <button class="close-btn" id="close">close</button>
               </div>
             </form>
           </div>

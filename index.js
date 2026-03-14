@@ -9,7 +9,9 @@ class Note {
 
 class App {
     constructor() {
-        this.notes = [new Note("abc1", "test title", "test text")];
+        this.notes = [new Note(cuid(), "test title", "test text")];
+        this.selectedId = "";
+        this.miniSidebar = true;
         
         this.$activeForm = document.querySelector(".active-form");
         this.$inactiveForm= document.querySelector(".inactive-form");
@@ -20,9 +22,12 @@ class App {
         this.$note = document.querySelector(".note")
 
         this.$modal = document.querySelector(".modal");
-        this.$modalForm = document.querySelector("#modal-form")
-        
-        
+        this.$modalForm = document.querySelector("#modal-form");
+        this.$modalTitle = document.querySelector("#modal-title");
+        this.$modalText = document.querySelector("#modal-text");
+        this.$closeButton = document.querySelector("#close")
+
+        this.$sideBar = document.querySelector(".sidebar")
         
         this.addEventListeners();
         this.displayNotes();
@@ -33,6 +38,8 @@ class App {
         document.body.addEventListener("click", (event) => {
             this.handleClick(event);
             this.openModal(event);
+            this.handleArchive(event);
+
         })
 
         this.$form.addEventListener("submit", (event)=> {
@@ -44,6 +51,22 @@ class App {
           this.addNote({title, text});
           this.closeActiveForm();
         })
+
+        this.$closeButton.addEventListener("click", (event)=> {
+          event.preventDefault();
+        
+        })
+
+        this.$sideBar.addEventListener("mouseover", (event)=>{
+          this.miniSidebar = true;
+          this.handleSideBar(event);
+        })
+
+        this.$sideBar.addEventListener("mouseout", (event)=>{
+          this.miniSidebar = false;
+          this.handleSideBar(event);
+        })
+         
 
     }
 
@@ -97,18 +120,44 @@ class App {
     
     //Open And Close Modal
     openModal(event){
-
-      if(event.target.closest(".note")){
+      const selector = event.target.closest(".note");
+      
+      if(selector && !event.target.closest(".archive")){
+        this.selectedId = selector.id;
         this.$modal.classList.add("open-modal")
+        this.$modalTitle.value = selector.children[1].innerHTML;
+        this.$modalText.value = selector.children[2].innerHTML;
       }
     }
 
     closeModal(event){
-
       const isModalForm = this.$modalForm.contains(event.target);
-        if(!isModalForm && this.$modal.classList.contains("open-modal")){
+      const closeButton = this.$closeButton.contains(event.target); 
+        if((!isModalForm || closeButton) && this.$modal.classList.contains("open-modal")){
           this.$modal.classList.remove("open-modal")
+          this.editNote(this.selectedId, {title: this.$modalTitle.value, text: this.$modalText.value});
         }
+    }
+
+    //Handle the Achieve
+    handleArchive(event){
+
+      const selector = event.target.closest(".note");
+      if(selector && event.target.closest(".archive")){
+        this.selectedId = selector.id;
+        this.deleteNote(this.selectedId);
+      }
+    }
+
+    //Handle Sidebar Event
+    handleSideBar(event){
+      if(this.miniSidebar){
+        this.$sideBar.style.width = "250px";
+        this.$sideBar.classList.add("sidebar-shadow");
+      } else {
+        this.$sideBar.style.width = "60px";
+        this.$sideBar.classList.remove("sidebar-shadow");
+      }
     }
 
     addNote ({title, text}) {
@@ -126,18 +175,21 @@ class App {
                 note.title = title;
                 note.text = text;
             }
+            
             return note;
         })
+        this.displayNotes();
     }
 
     deleteNote (id) {
         this.notes = this.notes.filter(note => note.id !== id)
+        this.displayNotes()
     }
 
     displayNotes(){
         this.$notes.innerHTML = this.notes.map(note =>{
            return `
-           <div class="note" onmouseover="app.handleMouseOverNote()" onmouseout="app.handleMouseOutNote()">
+           <div class="note" id="${note.id}" onmouseover="app.handleMouseOverNote()" onmouseout="app.handleMouseOutNote()">
           <span class="material-symbols-outlined check-circle" id="check-circle"
             >check_circle</span
           >
@@ -169,10 +221,10 @@ class App {
               <span class="tooltip-text">Add Image</span>
             </div>
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
+              <span class="material-symbols-outlined hover small-icon archive"
                 >archive</span
               >
-              <span class="tooltip-text">Archive</span>
+              <span class="tooltip-text archive">Archive</span>
             </div>
             <div class="tooltip">
               <span class="material-symbols-outlined hover small-icon"
