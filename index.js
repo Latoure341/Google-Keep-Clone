@@ -28,9 +28,10 @@ class App {
         this.$closeButton = document.querySelector("#close")
 
         this.$sideBar = document.querySelector(".sidebar")
+        this.$sideBarActive = document.querySelector(".active-bar")
         
         this.addEventListeners();
-        this.displayNotes();
+        this.render();
     }
 
     addEventListeners(){
@@ -58,12 +59,10 @@ class App {
         })
 
         this.$sideBar.addEventListener("mouseover", (event)=>{
-          this.miniSidebar = true;
           this.handleSideBar(event);
         })
 
         this.$sideBar.addEventListener("mouseout", (event)=>{
-          this.miniSidebar = false;
           this.handleSideBar(event);
         })
          
@@ -151,12 +150,18 @@ class App {
 
     //Handle Sidebar Event
     handleSideBar(event){
+
       if(this.miniSidebar){
+        this.miniSidebar = false;
         this.$sideBar.style.width = "250px";
         this.$sideBar.classList.add("sidebar-shadow");
+        this.$sideBarActive.classList.add("sidebar-active-item")
+        
       } else {
-        this.$sideBar.style.width = "60px";
+        this.miniSidebar = true;
+        this.$sideBar.style.width = "70px";
         this.$sideBar.classList.remove("sidebar-shadow");
+        this.$sideBarActive.classList.remove("sidebar-active-item")
       }
     }
 
@@ -165,7 +170,7 @@ class App {
         if(text != ""){
             const note = new Note(cuid(), title, text);
             this.notes = [...this.notes, note];
-            this.displayNotes();
+            this.render();
         }        
     }
 
@@ -178,12 +183,21 @@ class App {
             
             return note;
         })
-        this.displayNotes();
+        this.render();
     }
 
     deleteNote (id) {
         this.notes = this.notes.filter(note => note.id !== id)
-        this.displayNotes()
+        this.render()
+    }
+
+    //Save the NOtes
+    saveNotes(){
+      localStorage.setItem('notes', JSON.stringify(this.notes));
+    }
+    render(){
+      this.saveNotes();
+      this.displayNotes();
     }
 
     displayNotes(){
